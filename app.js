@@ -1,10 +1,16 @@
 const parser = require('./request-parser');
 const Router = require('./router');
 
+/**
+ * Application entry point
+ *
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
 const app = function (req, res) {
 	parser(req)
 		.then((result) => {
-			Object.assign(req, result);
+            Object.assign(req, result);
 
 			if (!app.router || !app.router.check(req.method, req.path)) {
 				res.writeHead(404);
@@ -12,6 +18,12 @@ const app = function (req, res) {
 				return res.end('Not Found\n');
 			}
 
+            /**
+             * Predefine send function for response
+             *
+             * @param {String|Object} data - response data
+             * @returns {boolean|*|number}
+             */
 			res.send = (data) => {
 				if (typeof data === 'object') {
 					res.setHeader('Content-Type', 'application/json');
